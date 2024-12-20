@@ -79,28 +79,20 @@ public:
 		n->pNext = nullptr;
 	}
 
-	/*
-	void Insert(Node*& el) {
+	bool operator==(const TList& l)  {
 		Node* p = pFirst;
-		InsertFirst(el);
-		if (p && (el->grades < p->grades)) {
-			el->pNext = p->pNext;
-			p->pNext = el;
-			pFirst = p;
-			p = el->pNext;
+		Node* nep = l.pFirst;
+		while (p && nep) {
+			if (p->c != nep->c or p->grades != nep->grades)
+				return false;
+			p = p->pNext;
+			nep = nep->pNext;
 		}
-		Node* pr = pFirst;
-		while (p && (el->grades < p->grades)) {
-			pr->pNext = p;
-			el->pNext = p->pNext;
-			p->pNext = el;
-
-			pr = p;
-			p = el->pNext;
-		}
-
+		if (p && !nep or !p && nep)
+			return false;
+		return true;
 	}
-	*/
+
 	
 	void pr() {
 		Node* p = pFirst;
@@ -160,7 +152,7 @@ class TPolinomial {
 		if (syms.find(s[0]) == -1) return false;
 		if ((s.size() > 1) && (pm.find(s[0] + s[1]) != -1)) return false;
 		for (size_t i = 1; i < s.size(); i++) {
-			if (syms.find(s[i]) < 0) return false;
+			if (syms.find(s[i]) == -1) return false;
 			if (pm.find(s[i-1] + s[i]) != -1) return false;
 			return true; 
 		}
@@ -251,51 +243,6 @@ public:
 		
 	}
 
-	std::string getStringVers() const  {
-		std::string poly_str = "";
-		Node* p = monoms.pFirst;
-		std::string vars = "xyz";
-		ui grade[] = { (p->grades / 100), ((p->grades) / 10 - (p->grades / 100 * 10)), (p->grades - p->grades / 10 * 10)};
-		
-		if (p->c == -1 or p->c < 0)
-			poly_str += '-';
-		if (p->grades == 0)
-			poly_str += (p->c > 0 ? p->c : -1 * p->c);
-		if ((p->c != 1) && (p->c != -1) && (p->grades != 0))
-			poly_str += (p->c > 0 ? p->c : -1 * p->c);
-		for (ui i = 0; i < vars.size(); i++) {
-			if (grade[i] > 0)
-				poly_str += vars[i];
-			if (grade[i] > 1)
-				poly_str += grade[i];
-		}
-		p = p->pNext;
-
-		while (p) {
-			grade[0] = (p->grades / 100);
-			grade[1] = ((p->grades) / 10 - (p->grades / 100 * 10));
-			grade[2] = (p->grades - p->grades / 10 * 10);
-
-			if (p->c < 0)
-				poly_str += '-';
-			if (p->c > 0)
-				poly_str += '+';
-
-			if (p->grades == 0)
-				poly_str += (p->c > 0 ? p->c : -1 * p->c);
-			if ((p->c != 1) && (p->c != -1) && (p->grades != 0))
-				poly_str += (p->c > 0 ? p->c : -1 * p->c);
-			for (ui i = 0; i < vars.size(); i++) {
-				if (grade[i] > 0)
-					poly_str += vars[i];
-				if (grade[i] > 1)
-					poly_str += grade[i];
-			}
-			p = p->pNext;
-		}
-		return poly_str;
-	}
-
 	void print() {
 		std::string poly_str = "";
 		Node* p = monoms.pFirst;
@@ -340,6 +287,50 @@ public:
 		}
 	}
 	
+	std::string getStrVers() {
+		std::string poly_str = "";
+		Node* p = monoms.pFirst;
+		std::string vars = "xyz";
+		ui grade[] = { (p->grades / 100), ((p->grades) / 10 - (p->grades / 100 * 10)), (p->grades - p->grades / 10 * 10) };
+
+		if (p->c == -1 or p->c < 0)
+			poly_str +=  '-';
+		if (p->grades == 0)
+			poly_str += std::to_string(p->c > 0 ? p->c : -1 * p->c);
+		if ((p->c != 1) && (p->c != -1) && (p->grades != 0))
+			poly_str += std::to_string(p->c > 0 ? p->c : -1 * p->c);
+		for (ui i = 0; i < vars.size(); i++) {
+			if (grade[i] > 0)
+				poly_str += std::to_string(vars[i]);
+			if (grade[i] > 1)
+				poly_str += std::to_string(grade[i]);
+		}
+		p = p->pNext;
+
+		while (p) {
+			grade[0] = (p->grades / 100);
+			grade[1] = ((p->grades) / 10 - (p->grades / 100 * 10));
+			grade[2] = (p->grades - p->grades / 10 * 10);
+
+			if (p->c < 0)
+				poly_str +=  '-';
+			if (p->c > 0)
+				poly_str +=  '+';
+
+			if (p->grades == 0)
+				poly_str += std::to_string(p->c > 0 ? p->c : -1 * p->c);
+			if ((p->c != 1) && (p->c != -1) && (p->grades != 0))
+				poly_str += std::to_string(p->c > 0 ? p->c : -1 * p->c);
+			for (ui i = 0; i < vars.size(); i++) {
+				if (grade[i] > 0)
+					poly_str += std::to_string(vars[i]);
+				if (grade[i] > 1)
+					poly_str += std::to_string(grade[i]);
+			}
+			p = p->pNext;
+		}
+		return poly_str;
+	}
 
 	long calculate(const int px, const int py, const int pz) {
 		Node* p = monoms.pFirst;
@@ -407,7 +398,11 @@ public:
 		return sum;
 	}
 
-	TPolinomial operator*(int& ct) const {
+	bool operator==(const TPolinomial& pl) {
+		return monoms == pl.monoms;
+	}
+
+	TPolinomial operator*(const int& ct) const {
 		TPolinomial prod;
 		Node* p = monoms.pFirst;
 		Node* el = nullptr;
@@ -430,20 +425,6 @@ public:
 	}
 	
 	TPolinomial& operator=(const TPolinomial& pl) {
-		/* Node* p = monoms.pFirst;
-		Node* tmp = nullptr;
-		while (monoms.pFirst != nullptr) {
-			p = monoms.pFirst;
-			monoms.pFirst = p->pNext;
-			delete p;
-		}
-		monoms.pFirst = 0;
-
-		p = pl.monoms.pFirst;
-		for (; p; p = tmp) {
-			tmp = p->pNext;
-			monoms.InsertLast(p);
-		}*/
 		monoms = pl.monoms;
  		return *this;
 	};

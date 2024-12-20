@@ -3,27 +3,6 @@
 
 using namespace std;
 
-void main1() {
-	TList l;
-	Node* n0 = new Node{ 0, 301, 0 };
-	Node* n5 = new Node{ 0, 301, 0 };
-	Node* n1 = new Node{ 0, 200, 0 };
-	Node* n2 = new Node{ 0, 15, 0 };
-	Node* n3 = new Node{ 0, 132, 0 };
-	l.InsertFirst(n2);
-	l.InsertFirst(n3);
-	l.InsertFirst(n1);
-	l.InsertFirst(n0);
-	l.InsertFirst(n5);
-
-	Node* n = new Node{ 0, 139, 0 };
-	l.pr();
-	cout << endl << endl;
-	//l.Insert(n);
-	l.pr();
-
-
-}
 
 void main() {
 	cout << "\"add\" - sum of two polinomials\n";
@@ -36,7 +15,6 @@ void main() {
 	cout << "Enter \"exit\" to close the program\n";
 	cout << "Memory limit - 998 polinomials\n";
 	string inp = "", poly = "";
-	//map<unsigned, TPolinomial>
 	TPolinomial polynomials[1000];
 
 	size_t i = 0;
@@ -60,7 +38,6 @@ void main() {
 					}
 					TPolinomial tmp(poly);
 					polynomials[i++] = tmp;
-					//p = tmp;
 				} while (fg);
 			} 
 			catch (string ex) {
@@ -68,7 +45,6 @@ void main() {
 				cout << ex << "\nPlease, try again\n";
 			}
 			if (fg) continue;
-			//
 		}
 		if (inp == "show") {
 			for (size_t j = 0; j < i; j++) {
