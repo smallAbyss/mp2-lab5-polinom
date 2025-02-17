@@ -98,7 +98,7 @@ void main() {
 				continue;
 			}
 			cout << "Enter multiplyer: ";
-			cin >> a;
+			cin >> b;
 			
 			TPolinomial p = polynomials[a]*b;
 			cout << p;
